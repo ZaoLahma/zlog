@@ -8,7 +8,10 @@ namespace zlog
     {
         public:
         ZLog();
+        ZLog(const std::string& context);
         ZLog(std::ostream& logStream);
+        ZLog(const std::string& context, std::ostream& logStream);
+        ZLog(const ZLog& logStream);
 
         void log(const char* formatString, ...);
 
@@ -17,5 +20,6 @@ namespace zlog
 
         private:
         std::ostream& mLogStream;
+        const std::string& mContext;
     };
 }

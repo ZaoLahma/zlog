@@ -30,6 +30,13 @@ TEST_F(LogTest, TestDefaultCoutLog)
     log.log("Test integer %i", 1234);
 }
 
+TEST_F(LogTest, TestDefaultCoutLogWithContext)
+{
+    zlog::ZLog log("MyContext");
+
+    log.log("Test integer %i", 1234);
+}
+
 TEST_F(LogTest, TestFileLog)
 {
     std::ofstream logFileOutStream("file.log", std::ofstream::out);

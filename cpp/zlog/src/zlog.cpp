@@ -14,12 +14,25 @@
 
 namespace zlog
 {
-    ZLog::ZLog() : mLogStream(std::cout)
+    ZLog::ZLog() : mLogStream(std::cout), mContext("")
     {
     }
 
-    ZLog::ZLog(std::ostream& logStream) : mLogStream(logStream)
+    ZLog::ZLog(const std::string& context) : mLogStream(std::cout), mContext(context)
     {
+    }
+
+    ZLog::ZLog(std::ostream& logStream) : mLogStream(logStream), mContext("")
+    {
+    }
+
+    ZLog::ZLog(const std::string& context, std::ostream& logStream) : mLogStream(logStream), mContext(context)
+    {
+    }
+
+    ZLog::ZLog(const ZLog& other) : mLogStream(other.mLogStream), mContext(other.mContext)
+    {
+        
     }
 
     void ZLog::log(const char* formatString, ...)
@@ -27,6 +40,11 @@ namespace zlog
         std::stringstream stringToPrint;
 
         stringToPrint<<getTimeStamp()<<" ";
+
+        if ("" != mContext)
+        {
+            stringToPrint<<mContext<<" - ";
+        }
 
         char buf[2048];
 
