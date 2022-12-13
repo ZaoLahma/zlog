@@ -1,2 +1,2 @@
 # zlog
-A simple(ish) logging framework
+A simple logging library
