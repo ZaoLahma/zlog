@@ -120,7 +120,7 @@ namespace zlog
 
     void ZLog::writeToLogStream(const std::stringstream& toWrite)
     {
-        std::unique_lock<std::mutex> logStreamLock(mLogStreamMutex);
+        std::lock_guard<std::mutex> logStreamLock(mLogStreamMutex);
         mLogStream<<toWrite.str();
     }
 }
