@@ -23,6 +23,5 @@ namespace zlog
         private:
         std::mutex mLogStreamMutex;
         std::ostream& mLogStream;
-        const std::string& mContext;
     };
 }

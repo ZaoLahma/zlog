@@ -14,15 +14,15 @@
 
 namespace zlog
 {
-    ZLog::ZLog() : mLogStream(std::cout), mContext("")
+    ZLog::ZLog() : mLogStream(std::cout)
     {
     }
 
-    ZLog::ZLog(std::ostream& logStream) : mLogStream(logStream), mContext("")
+    ZLog::ZLog(std::ostream& logStream) : mLogStream(logStream)
     {
     }
 
-    ZLog::ZLog(const ZLog& other) : mLogStream(other.mLogStream), mContext(other.mContext)
+    ZLog::ZLog(const ZLog& other) : mLogStream(other.mLogStream)
     {
         
     }
