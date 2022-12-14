@@ -18,15 +18,7 @@ namespace zlog
     {
     }
 
-    ZLog::ZLog(const std::string& context) : mLogStream(std::cout), mContext(context)
-    {
-    }
-
     ZLog::ZLog(std::ostream& logStream) : mLogStream(logStream), mContext("")
-    {
-    }
-
-    ZLog::ZLog(const std::string& context, std::ostream& logStream) : mLogStream(logStream), mContext(context)
     {
     }
 
@@ -41,10 +33,25 @@ namespace zlog
 
         stringToPrint<<getTimeStamp()<<" ";
 
-        if ("" != mContext)
-        {
-            stringToPrint<<mContext<<" - ";
-        }
+        char buf[2048];
+
+        va_list args;
+        va_start(args, formatString);
+        vsprintf(buf, formatString, args);
+        va_end (args);
+
+        stringToPrint<<std::string(buf)<<std::endl;
+
+        writeToLogStream(stringToPrint);
+    }
+
+    void ZLog::logExtra(const std::string& extra, const char* formatString, ...)
+    {
+        std::stringstream stringToPrint;
+
+        stringToPrint<<getTimeStamp()<<" ";
+
+        stringToPrint<<extra<<" ";
 
         char buf[2048];
 
@@ -55,7 +62,7 @@ namespace zlog
 
         stringToPrint<<std::string(buf)<<std::endl;
 
-        mLogStream<<stringToPrint.str();
+        writeToLogStream(stringToPrint);
     }
 
     std::string ZLog::getTimeStamp()
@@ -109,5 +116,11 @@ namespace zlog
                 nsecond);
 
         return std::string(buf);
+    }
+
+    void ZLog::writeToLogStream(const std::stringstream& toWrite)
+    {
+        std::unique_lock<std::mutex> logStreamLock(mLogStreamMutex);
+        mLogStream<<toWrite.str();
     }
 }
