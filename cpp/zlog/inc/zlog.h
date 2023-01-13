@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <mutex>
+#include <cstdint>
 
 namespace zlog
 {
@@ -28,11 +28,12 @@ namespace zlog
             stringToWriteToLog<<extra<<" "<<createString(formatString, std::forward<Args>(args)...);
             
             log(stringToWriteToLog.str());
-        }
+        } 
+
+        std::string createString(const char* formatString, ...); 
 
         protected:
-        void log(const std::string& logString);
-        std::string createString(const char* formatString, ...);        
+        void log(const std::string& logString);   
         std::string getTimeStamp();
         void writeToLogStream(const std::stringstream& toWrite);
 

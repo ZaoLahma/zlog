@@ -1,8 +1,9 @@
 #include "zlog.h"
-#include <chrono>
 
+#include <chrono>
 #include <iomanip>
 #include <cstdarg>
+#include <iostream>
 
 #ifdef __APPLE__
 #include <mach/mach.h>
@@ -10,6 +11,8 @@
 #include <mach/mach_time.h>
 #include <mach/clock.h>
 #endif
+
+#define ZLOG_TIME_STAMP_CHAR_LENGTH 31u
 
 namespace zlog
 {
@@ -23,7 +26,6 @@ namespace zlog
 
     ZLog::ZLog(const ZLog& other) : mLogStream(other.mLogStream)
     {
-        
     }
 
     void ZLog::log(const std::string& logString)
@@ -39,14 +41,31 @@ namespace zlog
     
     std::string ZLog::createString(const char* formatString, ...)
     {
-        char buf[2048];
+        std::string retVal;
 
         va_list args;
         va_start(args, formatString);
-        vsprintf(buf, formatString, args);
-        va_end (args);
+        
+        va_list argsCopy;
+        va_copy(argsCopy, args);
 
-        return std::string(buf);
+        /* Figure out how large a buffer we will need for this log entry */
+        const int neededBufSize = vsnprintf(NULL, 0u, formatString, args) + 1;
+        va_end(args);
+
+        /* And finally produce the string that we want to return */
+        if (0 < neededBufSize)
+        {
+            char buf[neededBufSize];
+
+            (void) vsnprintf(buf, neededBufSize, formatString, argsCopy);
+
+            retVal = std::string(buf);
+        }
+
+        va_end(argsCopy);
+
+        return retVal;
     }
 
     std::string ZLog::getTimeStamp()
@@ -87,8 +106,8 @@ namespace zlog
             free(currentTime);
         #endif
 
-        const uint8_t buf_size = 31;
-        char buf[buf_size];
+        /* The buf size of the time stamp is constant */
+        char buf[ZLOG_TIME_STAMP_CHAR_LENGTH];
         sprintf(buf, 
                 "[%d-%02d-%02d %02d:%02d:%02d.%.9d]",
                 year,
