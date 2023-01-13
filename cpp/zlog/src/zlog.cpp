@@ -1,7 +1,6 @@
 #include "zlog.h"
 #include <chrono>
 
-#include <sstream>
 #include <iomanip>
 #include <cstdarg>
 
@@ -27,32 +26,19 @@ namespace zlog
         
     }
 
-    void ZLog::log(const char* formatString, ...)
+    void ZLog::log(const std::string& logString)
     {
-        std::stringstream stringToPrint;
+        std::stringstream stringToWriteToLog;
 
-        stringToPrint<<getTimeStamp()<<" ";
+        stringToWriteToLog<<getTimeStamp()<<" ";
 
-        char buf[2048];
+        stringToWriteToLog<<logString<<std::endl;
 
-        va_list args;
-        va_start(args, formatString);
-        vsprintf(buf, formatString, args);
-        va_end (args);
-
-        stringToPrint<<std::string(buf)<<std::endl;
-
-        writeToLogStream(stringToPrint);
+        writeToLogStream(stringToWriteToLog);
     }
-
-    void ZLog::logExtra(const std::string& extra, const char* formatString, ...)
+    
+    std::string ZLog::createString(const char* formatString, ...)
     {
-        std::stringstream stringToPrint;
-
-        stringToPrint<<getTimeStamp()<<" ";
-
-        stringToPrint<<extra<<" ";
-
         char buf[2048];
 
         va_list args;
@@ -60,9 +46,7 @@ namespace zlog
         vsprintf(buf, formatString, args);
         va_end (args);
 
-        stringToPrint<<std::string(buf)<<std::endl;
-
-        writeToLogStream(stringToPrint);
+        return std::string(buf);
     }
 
     std::string ZLog::getTimeStamp()

@@ -28,6 +28,12 @@ TEST_F(LogTest, TestDefaultCoutLog)
     zlog::ZLog log;
 
     log.log("Test integer %i", 1234);
+
+    log.log("Log nothing but an already prepared string");
+
+    log.logExtra("Extra", "Test integer %i", 1357);
+
+    log.logExtra("Extra", "Just a string");
 }
 
 TEST_F(LogTest, TestFileLog)
